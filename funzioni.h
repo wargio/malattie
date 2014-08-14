@@ -26,7 +26,4 @@ void print_malattie(void);
 void free_pazienti(void);
 void free_malattie(void);
 
-void fwrite_malattie(const char* fpath);
-void fwrite_pazienti(const char* fpath);
-
 #endif

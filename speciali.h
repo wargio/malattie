@@ -30,4 +30,6 @@ compare_t* compare(const char* s0, const char* s1, size_t n);
 void to_lower(char* s, size_t len);
 void to_upper(char* s, size_t len);
 
+size_t fixed_strlen(const char* s);
+
 #endif

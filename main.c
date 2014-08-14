@@ -8,7 +8,7 @@
 #include "copyright.h"
 #include "funzioni.h"
 #include "options.h"
-#include "read_file.h"
+#include "rw_file.h"
 
 void do_init(){
 	fload_malattie(fpath_malattie);
@@ -27,13 +27,17 @@ void do_end(){
 int main(int argc, char** argv){
 	pargs(argc, argv);
 	printf(COPYWRIGHT_TXT);
-	if(!avvia_console || real_args < 1)
+
+	if(read_flag  && !console)
+		return 1;
+
+	if(write_flag && !read_flag)
 		return 1;
 
 	do_init();
 
-	if(avvia_console)
-		console();
+	if(console)
+		prompt();
 
 	do_end();
 	return 0;

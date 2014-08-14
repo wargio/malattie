@@ -15,11 +15,11 @@
 #include <stdio.h>
 #include <string.h>
 
-static lista_pazienti* pazienti = NULL; // dovrebbe essere già a 0, ma per sicurezza mettiamo a NULL
-static lista_malattie* malattie = NULL; // dovrebbe essere già a 0, ma per sicurezza mettiamo a NULL
+lista_pazienti* pazienti = NULL;
+lista_malattie* malattie = NULL;
 
-static uint32_t n_pazienti = 0;
-static uint32_t n_malattie = 0;
+uint32_t n_pazienti = 0;
+uint32_t n_malattie = 0;
 
 /*
 typedef struct _lista_malattie{
@@ -35,7 +35,7 @@ typedef lista_malattie malattia;
 lista_malattie* genera_malattia(const char* nome){
 	lista_malattie* ptr = (lista_malattie*) malloc(sizeof(lista_malattie));
 	memset(ptr, 0, sizeof(lista_malattie));
-	size_t len = sizeof(char)*strlen(nome)+1;
+	size_t len = sizeof(char)*fixed_strlen(nome)+1;
 	char* txt = (char*) malloc(len);
 	memset(txt, 0, len);
 	--len;
@@ -54,7 +54,8 @@ lista_malattie* malattia(const char* nome_malattia, int crea){
 	}else if(malattie){
 		char k[NOME_MALATTIA_MAX_STR];
 		memset(k,0,NOME_MALATTIA_MAX_STR);
-		size_t len = strlen(nome_malattia);
+//		size_t len = strlen(nome_malattia);
+		size_t len = fixed_strlen(nome_malattia);
 		len = (len>=NOME_MALATTIA_MAX_STR) ? NOME_MALATTIA_MAX_STR-1 : len;
 		memcpy(k,nome_malattia,len);
 		to_lower(k, len);
@@ -101,6 +102,7 @@ lista_pazienti* genera_paziente(const char* codice_fiscale){
 	memset(ptr, 0, sizeof(lista_pazienti));
 	memset(new, 0, sizeof(paziente));
 	memcpy(ptr->codice_fiscale, codice_fiscale, 16); 
+	DPRINTF("[Creo %s]\n", ptr->codice_fiscale);
 	ptr->persona = new;
 	++n_pazienti;
 	return ptr;
@@ -123,8 +125,10 @@ lista_pazienti* soggetto(const char* codice_fiscale, int crea){
 					break;
 				free(cmp);
 				cmp = NULL;
-			}else
+			}else{
+				DPRINTF("[Trov %s]\n", ptr->codice_fiscale);
 				return ptr;
+			}
 			old = ptr;
 			ptr = ptr->next;
 		}
@@ -354,6 +358,7 @@ void free_pazienti(void){
 		ptr = tmp;
 	}
 	pazienti = NULL;
+	n_pazienti = 0;
 }
 
 void free_malattie(void){
@@ -367,71 +372,5 @@ void free_malattie(void){
 		ptr = tmp;
 	}
 	malattie = NULL;
-}
-
-void fwrite_malattie(const char* fpath){
-	if(!fpath || !malattie){
-		printf("ERRORE: Non sono riuscito a scrivere %s(%s)\n", (fpath) ? fpath : "", (fpath) ? "lista malattie vuota" : "percorso non valido");
-		return;
-	}
-	lista_malattie *ptr = malattie;
-	char* my_space = (char*) malloc(1024);
-	memset(my_space, 0, 1024);
-	parser_t* ctx = csv_init(my_space, 1024);
-	csv_open(fpath, ctx);
-	DPRINTF("[fwrite_malattie] [%s]\n", fpath);
-	while(ptr != NULL){
-		csv_compose_string(ctx, ptr->nome);
-		csv_compose_integer(ctx, ptr->t);
-		csv_write(ctx);
-		DPRINTF("[fwrite_malattie] < %s\n", my_space);
-		csv_reset_compose(ctx);
-		ptr = ptr->next;
-	}
-	csv_close(ctx);
-	csv_destroy(ctx);
-	free(my_space);
-	printf("%s scritto\n", fpath);
-}
-
-void fwrite_pazienti(const char* fpath){
-	if(!fpath || !pazienti){
-		printf("ERRORE: Non sono riuscito a scrivere %s(%s)\n", (fpath) ? fpath : "", (fpath) ? "lista pazienti vuota" : "percorso non valido");
-		return;
-	}
-	lista_pazienti *ptr = pazienti;
-	char* my_space = (char*) malloc(1024);
-	memset(my_space, 0, 1024);
-	parser_t* ctx = csv_init(my_space, 1024);
-	csv_open(fpath, ctx);
-	DPRINTF("[fwrite_pazienti] [%s]\n", fpath);
-	while(ptr != NULL){
-		csv_compose_string(ctx, ptr->codice_fiscale);
-		if(ptr->persona->contagiato)
-			csv_compose_string(ctx, ptr->persona->contagiato->nome);
-		else
-			csv_compose_string(ctx, NULL);
-		if(ptr->persona->immune)
-			csv_compose_string(ctx, ptr->persona->immune->nome);
-		else
-			csv_compose_string(ctx, NULL);
-		if(ptr->persona->n_contatti){
-			csv_compose_integer(ctx, ptr->persona->n_contatti);
-			int i, r;
-			for(i=0, r=PARSER_OK; r == PARSER_OK && i<ptr->persona->n_contatti; ++i){
-				r = csv_compose_string(ctx, ptr->persona->catena[i]->persona->codice_fiscale);
-				if(r != PARSER_OK)
-					break;
-				r = csv_compose_integer(ctx, ptr->persona->catena[i]->v);
-			}
-		}
-		csv_write(ctx);
-		DPRINTF("[fwrite_pazienti] < %s\n", my_space);
-		csv_reset_compose(ctx);
-		ptr = ptr->next;
-	}
-	csv_close(ctx);
-	csv_destroy(ctx);
-	free(my_space);
-	printf("%s scritto\n", fpath);
+	n_malattie = 0;
 }

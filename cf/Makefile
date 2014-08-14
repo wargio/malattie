@@ -1,18 +1,12 @@
-
-## Copyright 2014, Grazioli Giovanni Dante <wargio@libero.it>
-## Licensed under the terms of the GNU GPL, version 2
-## http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
-
 V		=	@
-FILES	=	funzioni speciali parser rw_file options
-FILES	+=	comando
-COMMON	=	Makefile strutture.h copyright.h
+FILES	=	cf
+COMMON	=	Makefile 
 CC		=	gcc
-CFLAGS	=	-Wall -ggdb -DDEBUG
+CFLAGS	=	-Wall -ggdb 
 LDLIBS  =	-lm
 OBJS	=	$(addsuffix .o, $(FILES)) main.o
 DEPS	=	$(addsuffix .h, $(FILES))
-EXEC	=	malattie
+EXEC	=	cf
 
 all: $(OBJS)
 	@echo [LD] $(EXEC)

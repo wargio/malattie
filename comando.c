@@ -17,7 +17,7 @@
 #include "options.h"
 
 static const char* list_cmd[][2] = {
-	/*cmd				description*/
+	/*cmd, description*/
 	{"quit","Esce dal programma."},
 	{"help","Mostra questa schermata."},
 	{"pazienti","Stampa su schermo tutti i pazienti in archivio"},
@@ -67,7 +67,7 @@ int call(const char* cmd){
 	size_t len;
 	size_t larg;
 	const char* argX;
-	const char *arg1, *arg2, *arg3, *arg4;
+	const char *arg1, *arg2, *arg3; //, *arg4;
 
 	memset(arg, 0, CMD_LENGTH);
 	len = size_cmd(cmd);
@@ -75,8 +75,10 @@ int call(const char* cmd){
 
 	if(!strncmp(cmd, "quit", 4))
 		return CMD_EXIT;
+#ifdef DEBUG
 	else if(len == 2 && !strncmp(cmd, "q", 1))
 		return CMD_EXIT;
+#endif
 	else if(!strncmp(cmd, "help", 4)){
 		int i=0;
 		printf("# Lista dei comandi #\n");
@@ -115,13 +117,13 @@ int call(const char* cmd){
 			printf("[Errore] uno o piu' argomenti non sono validi\n");
 		arg1 = argX;
 		larg = size_cmd(arg1);
-		arg2 = next_cmd(cmd + larg);
+		arg2 = next_cmd(arg1 + larg);
 		larg = size_cmd(arg2);
-		arg3 = next_cmd(cmd + larg);
-		if(!arg1 || ! arg2 || arg3)
-			printf("[Errore] uno o piu' argomenti non sono validi\n");
+		arg3 = next_cmd(arg2 + larg);
+		if(!arg1 || !arg2 || !arg3)
+			printf("[Errore] uno o piu' argomenti non sono validi (%p %p %p)\n", arg1, arg2, arg3);
 		else if(size_cmd(arg1) != 17 || size_cmd(arg2) != 17)
-			printf("[Errore] uno (o entrambi) formato/i del codice fiscale e'/sono strano/i (len %ld %ld)\n", size_cmd(arg1)-1, size_cmd(arg2)-1);
+			printf("[Errore] uno o entrambi i formati del codice fiscale sono strani (len %ld %ld)\n", size_cmd(arg1)-1, size_cmd(arg2)-1);
 		else{
 			int v;
 			memcpy(arg, arg1, 16); // 16 + space char
@@ -154,11 +156,12 @@ int call(const char* cmd){
 	return 0;
 }
 
-static void prompt(void){
+void prompt(void){
 #ifdef DEBUG
 	static char cmd[CMD_LENGTH];
 	memset(cmd, 0, CMD_LENGTH);
 	size_t len;
+	int num;
 #endif
 
 	const char* next = NULL;
@@ -167,12 +170,17 @@ static void prompt(void){
 
 	printf(PROMPT);
 	while(getline (&buf, &buf_len, stdin)){
+		if(buf[0] == '\n' || buf[0] == '\0'){
+			printf(PROMPT);
+			continue;
+		}
 #ifdef DEBUG
+		num = 0;
 		next = next_cmd(buf);
 		while(next != 0){
 			len  = size_cmd(next);
 			memcpy(cmd, next, (CMD_LENGTH > len) ? len : CMD_LENGTH_CPY);
-			DPRINTF("[CMD IN] (%ld) %s\n", len, cmd);
+			DPRINTF("[CMD IN] arg%d (%ld) %p=%s\n", num++, len, next, cmd);
 			next = next_cmd(next+len);
 			memset(cmd, 0, CMD_LENGTH);
 		}
@@ -186,7 +194,3 @@ static void prompt(void){
 		free(buf);
 }
 
-
-void console(void){
-	prompt();
-}

@@ -15,6 +15,6 @@
 #define CMD_NOT_FOUND					 1
 #define CMD_EXIT						-1
 
-void console(void);
+void prompt(void);
 
 #endif

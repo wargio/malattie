@@ -10,4 +10,7 @@
 int fload_malattie(const char* fpath);
 int fload_pazienti(const char* fpath);
 
+void fwrite_malattie(const char* fpath);
+void fwrite_pazienti(const char* fpath);
+
 #endif

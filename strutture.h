@@ -12,8 +12,8 @@
 
 #define NO_CONTATTO			-1
 
-#define NOME_MALATTIA_MAX_STR			20
-#define NOME_MALATTIA_MAX_TXT			"20"
+#define NOME_MALATTIA_MAX_STR			32
+#define NOME_MALATTIA_MAX_TXT			"32"
 
 
 typedef struct _lista_malattie lista_malattie;

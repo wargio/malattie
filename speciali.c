@@ -41,3 +41,12 @@ void to_upper(char* s, size_t len){
 		i++;
 	}
 }
+
+size_t fixed_strlen(const char* s){
+	size_t i = 0;
+	if(!s)
+		return 0;
+	while(s[i] != '\0' && s[i] != '\n' && s[i] != ';')
+		++i;
+	return i;
+}

@@ -10,12 +10,13 @@
 #include <getopt.h>
 #include <stdio.h>
 
-const char* fpath_pazienti = NULL;
-const char* fpath_malattie = NULL;
+const char* fpath_pazienti  = NULL;
+const char* fpath_malattie  = NULL;
 const char* fpath_wpazienti = NULL;
 const char* fpath_wmalattie = NULL;
-int         real_args = 0;
-int         avvia_console = 0;
+int         console = 0;
+int         write_flag = 0;
+int         read_flag = 0;
 
 static struct option options[] = {
 	{"help",      no_argument,       NULL, 'h'},
@@ -47,34 +48,36 @@ void pargs(int argc, char **argv)
 	while((c = getopt_long(argc, argv, "hcnp:m:k:l:", options, NULL)) != -1){
 		switch(c){
 			case 'n':
-				real_args = 1;
-				avvia_console = 1;
+				read_flag = 1;
+				write_flag = 1;
+				console = 1;
 				fpath_pazienti = NULL;
 				fpath_malattie = NULL;
 				return;
 			case 'h':
 				usage();
-				real_args = 0;
 				return;
 			case 'p':
 				fpath_pazienti = optarg;
-				++real_args;
-				break;
-			case 'c':
-				avvia_console = 1;
+				++read_flag;
 				break;
 			case 'm':
 				fpath_malattie = optarg;
-				++real_args;
+				++read_flag;
 				break;
 			case 'k':
 				fpath_wpazienti = optarg;
+				++write_flag;
 				break;
 			case 'l':
 				fpath_wmalattie = optarg;
+				++write_flag;
+				break;
+			case 'c':
+				console = 1;
 				break;
 		}
 	}
-	if(real_args == 0)
+	if(!write_flag && !read_flag && !console)
 		printf("Scrivere './malattie --help' per ulteriori informazioni.\n");
 }

@@ -7,8 +7,9 @@
 #ifndef __OPTIONS_H__
 #define __OPTIONS_H__
 
-extern int real_args;
-extern int avvia_console;
+extern int console;
+extern int write_flag;
+extern int read_flag;
 extern const char* fpath_pazienti;
 extern const char* fpath_malattie;
 extern const char* fpath_wpazienti;
