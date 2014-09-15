@@ -91,7 +91,7 @@ const char* csv_next_string(parser_t* pp){
 		return NULL;
 	}
 	
-	char c = str[i];
+	unsigned char c = str[i];
 	if(c == '#'){
 		pp->r = PARSER_STR_NULL;
 		pp->n = pp->l;
@@ -142,7 +142,7 @@ long int csv_next_integer(parser_t* pp){
 		return 0;
 	}
 	long int X = 0;
-	char c = str[i];
+	unsigned char c = str[i];
 	if(c == '#'){
 		pp->r = PARSER_STR_NULL;
 		pp->n = pp->l;
@@ -195,7 +195,7 @@ double csv_next_double(parser_t* pp){
 		return 0;
 	}
 	double X = 0;
-	char c = str[i];
+	unsigned char c = str[i];
 	if(c == '#'){
 		pp->r = PARSER_STR_NULL;
 		pp->n = pp->l;

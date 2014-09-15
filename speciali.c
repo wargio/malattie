@@ -6,6 +6,10 @@
 
 #include "speciali.h"
 
+#ifdef DEBUG
+	#include <stdio.h>
+#endif
+
 #include <stdlib.h>
 #include <ctype.h>
 #include <assert.h>
@@ -29,7 +33,7 @@ compare_t* compare(const char* s0, const char* s1, size_t n){
 void to_lower(char* s, size_t len){
 	size_t i=0;
 	while(i < len){
-		s[i] = (char) tolower(s[i]);
+		s[i] = (char) tolower((unsigned char)s[i]);
 		i++;
 	}
 }
@@ -37,7 +41,16 @@ void to_lower(char* s, size_t len){
 void to_upper(char* s, size_t len){
 	size_t i=0;
 	while(i < len){
-		s[i] = (char) toupper(s[i]);
+		s[i] = (char) toupper((unsigned char)s[i]);
+		i++;
+	}
+}
+
+void rm_char(char* s, size_t len, unsigned char find, unsigned char change){
+	size_t i=0;
+	while(i < len){
+		if((unsigned char)s[i] == find)
+			s[i] = change;
 		i++;
 	}
 }
@@ -50,3 +63,59 @@ size_t fixed_strlen(const char* s){
 		++i;
 	return i;
 }
+
+size_t max_positive(int* v, size_t n){
+	if(!v || !n)
+		return 0;
+	size_t i, m;
+	m = 0;
+	for(i=0;i<n;++i)
+		m = (m < v[i]) ? v[i] : m;
+	return m;
+}
+
+size_t min_positive(int* v, size_t n){
+	if(!v || !n)
+		return 0;
+	size_t i, m;
+	m = 0;
+	for(i=0;i<n;++i)
+		m = (m > v[i]) ? v[i] : m;
+	return m;
+}
+
+void quicksort(int* v, int s, int n){
+	if(!v || !n)
+		return;
+    int tmp, swc;
+    int  l,r,p;
+    while (s<n){
+        l = s;
+		p = (s+n)/2;
+		r = n;
+        tmp = v[p];
+        while (1){
+            while((l<=r) && (v[l]<=tmp))
+				++l;
+            while((l<=r) && (v[r]>tmp))
+				--r;
+            if (l>r) break;
+            swc=v[l];
+			v[l]=v[r];
+			v[r]=swc;
+            if (p==r--)
+				p=l;
+            ++l;
+        }
+        v[p]=v[r];
+		v[r--]=tmp;
+        if((r-s)<(n-l)){
+            quicksort(v, s, r);
+            s=l;
+        }else{
+            quicksort(v, l, n);
+            n=r;
+        }
+    }   
+}
+

@@ -10,7 +10,7 @@
 #define INFINITE_T			-2
 #define NO_T				-1
 
-#define NO_CONTATTO			-1
+#define NO_CONTATTO			0
 
 #define NOME_MALATTIA_MAX_STR			32
 #define NOME_MALATTIA_MAX_TXT			"32"
@@ -21,6 +21,7 @@ typedef lista_malattie patologia;
 typedef struct _contatti contatti;
 typedef struct _paziente paziente;
 typedef struct _lista_pazienti lista_pazienti;
+typedef struct _lista_ricerca lista_ricerca;
 
 struct _lista_malattie{
 	const char* 	nome;		// nome
@@ -45,6 +46,11 @@ struct _lista_pazienti{
 	char codice_fiscale[17];	// codice fiscale
 	paziente*      persona;		// informazioni paziente
 	lista_pazienti* next;		// paziente successivo
+};
+
+struct _lista_ricerca{
+	lista_pazienti* paziente;	// informazioni persona
+	int v;						// valore contatto
 };
 
 

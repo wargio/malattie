@@ -9,7 +9,7 @@
 
 #include <stddef.h>
 #ifdef DEBUG
-	#define DPRINTF(args ...)			if(DEBUG) printf(args)
+	#define DPRINTF(args ...)			printf("[DEBUG]"args)
 #else
 	#define DPRINTF(args ...)
 #endif
@@ -29,7 +29,12 @@ compare_t* compare(const char* s0, const char* s1, size_t n);
 
 void to_lower(char* s, size_t len);
 void to_upper(char* s, size_t len);
+void rm_char (char* s, size_t len, unsigned char find, unsigned char change);
 
 size_t fixed_strlen(const char* s);
+
+size_t max_positive(int* v, size_t n);
+size_t min_positive(int* v, size_t n);
+void quicksort(int* v, int s, int n);
 
 #endif

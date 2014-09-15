@@ -26,5 +26,10 @@ $(OBJS): %.o: %.c $(DEPS) $(COMMON)
 clean:
 	@echo [RM] $(OBJS) $(EXEC) 
 	$(V)rm -f $(OBJS) $(EXEC) *~ *.stackdump
+	$(V)make --no-print-directory -C cf clean
 	
+make-cf:
+	@echo [MK] cf
+	$(V)make --no-print-directory -C cf
+
 .PHONY: all clean

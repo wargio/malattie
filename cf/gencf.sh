@@ -1,14 +1,22 @@
+## Copyright 2014, Grazioli Giovanni Dante <wargio@libero.it>
+## Licensed under the terms of the GNU GPL, version 2
+## http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+
 #!/bin/bash
 MY_TEMP="tmp4324242.txt"
-FOLDER=$PWD"/"
+FOLDER=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"/"
 if [ $# -eq 2 ]; then
 	if [ -e $2 ]; then 
 		printf "Il file $2 esiste!!\nCambia il nome o eliminalo.\n" >&2
 		exit 1
 	fi
-	if [ ! -x "./cf" ]; then 
+	if [ ! -x "$FOLDER/cf" ]; then 
 		printf "L'eseguibile ./cf non esiste!!\n" >&2
 		printf "esegui 'make' per compilarlo.\n" >&2
+		exit 1
+	fi
+	if [ ! -d "$FOLDER/liste" ]; then 
+		printf "Non riesco a trovare la cartella 'liste'\n" >&2
 		exit 1
 	fi
 	START_TIME=`date +%s`
@@ -27,7 +35,7 @@ if [ $# -eq 2 ]; then
 	N_PATOL=$(cat -n $FOLDER"liste/malattie_elenco.txt" | wc -l)
 	N_PATOL=$((N_PATOL + 1))
 	j=0
-	while [ $j -le $1 ]
+	while [ $j -lt $1 ]
 	do
 		NUM=$RANDOM
 		ANNO=$((2014 - NUM%80))
@@ -53,7 +61,7 @@ if [ $# -eq 2 ]; then
 		NUM=$RANDOM
 		RND=$((1 + NUM%N_COMUNE))
 		COMUNE=$(cat -n $FOLDER"liste/fast.txt" | grep -w "$RND" | awk '{ print $2 }')
-		CODFSC=$(./cf "$COGNOME" "$NOME" "$GIORNO" "$MESE" "$ANNO" "$MF" "$COMUNE" "$FOLDER_COMUNI" )
+		CODFSC=$($FOLDER/cf "$COGNOME" "$NOME" "$GIORNO" "$MESE" "$ANNO" "$MF" "$COMUNE" "$FOLDER_COMUNI" )
 		if [ ${#CODFSC} -eq 16 ]; then
 			echo "$CODFSC " >> tmp4324242.txt
 			j=$((j + 1))
@@ -105,5 +113,5 @@ if [ $# -eq 2 ]; then
 	ELAPSED=$(printf "%02d:%02d:%02d" $((ELAPSED/3600)) $((ELAPSED/60%60)) $((ELAPSED%60)))
     echo "Fatto! (Tempo: $ELAPSED)"
 else
-	echo "$0 <num> <file>"
+	echo "$0 <num> <file.csv>"
 fi

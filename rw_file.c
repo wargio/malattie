@@ -63,7 +63,23 @@ int fload_malattie(const char* fpath){
 	printf(" lette %ld righe\n", righe);
 	return 0;
 }
+// non funziona ancora correttamente
+/*
+dal file non funzia
+area VLNBSL52A14E391H
+[area] VLNBSL52A14E391H
+Contatti di VLNBSL52A14E391H
+|PRSMRG10M05I057Q|1|
+manca BLLNTN75M09F965F
+----------------------------------------
+da quello generato dal programma si.
+> area VLNBSL52A14E391H
+[area] VLNBSL52A14E391H
+Contatti di VLNBSL52A14E391H
+|PRSMRG10M05I057Q|1|
+|BLLNTN75M09F965F|8|
 
+*/
 int fload_pazienti(const char* fpath){
 	if(!fpath)
 		return 1;
